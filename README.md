@@ -1,74 +1,83 @@
 # SpeechBubble
 
-A project for Japanese language learning integration.
+Generate natural Japanese sentences using your WaniKani vocabulary and OpenAI's GPT models.
 
-## WaniKani Integration
+## Features
 
-The WaniKani integration allows you to fetch and manage your WaniKani vocabulary data.
+- Fetches your learned vocabulary from WaniKani
+- Uses GPT to generate natural Japanese sentences
+- Provides readings and English translations
+- Word-by-word breakdowns of generated sentences
+- Supports different grammar levels (beginner/intermediate)
 
-### Setup
+## Installation
 
-1. Install the required dependencies:
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/yourusername/speechbubble.git
+   cd speechbubble
+   ```
+
+2. Create and activate a virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Configuration
+
+You'll need two API keys:
+1. A WaniKani V2 API key (get it from your [WaniKani API page](https://www.wanikani.com/settings/personal_access_tokens))
+2. An OpenAI API key (get it from your [OpenAI dashboard](https://platform.openai.com/api-keys))
+
+On first run, the program will prompt you for these keys and store them securely in `~/.config/speechbubble/config.json`.
+
+## Usage
+
+Basic usage:
 ```bash
-pip install -r requirements.txt
+python main.py
 ```
 
-2. Get your WaniKani API key:
-   - Go to your [WaniKani Settings](https://www.wanikani.com/settings/personal_access_tokens)
-   - Generate a new API token
-   - Copy the token
+This will generate 3 sentences using beginner-level grammar.
 
-3. Set your API key as an environment variable:
+Options:
+- `-n N, --num-sentences N`: Generate N sentences (default: 3)
+- `-l LEVEL, --level LEVEL`: Grammar level: 'beginner' or 'intermediate' (default: beginner)
+- `--stats-only`: Only show vocabulary statistics, don't generate sentences
+
+Examples:
 ```bash
-export WANIKANI_API_KEY="your-api-key-here"
+# Generate 5 sentences
+python main.py -n 5
+
+# Use intermediate grammar
+python main.py -l intermediate
+
+# Just show vocabulary statistics
+python main.py --stats-only
 ```
 
-### Usage
+## How it Works
 
-The integration provides several features:
+1. The program fetches your learned vocabulary from WaniKani
+2. It organizes the vocabulary by part of speech (nouns, verbs, adjectives, etc.)
+3. Using GPT, it generates natural Japanese sentences using your vocabulary
+4. Each sentence comes with:
+   - Japanese text
+   - Reading in hiragana
+   - English translation
+   - Word-by-word breakdown
 
-1. Get unlocked vocabulary:
-```python
-from wanikani.client import WaniKaniAPI
+## Contributing
 
-client = WaniKaniAPI("your-api-key-here")
-vocab_list = client.get_vocabulary_summary()
-```
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-2. Get vocabulary for a specific level:
-```python
-level_vocab = client.get_vocabulary_by_level(5)  # Get level 5 vocabulary
-```
+## License
 
-3. Get vocabulary progress:
-```python
-progress = client.get_vocabulary_progress()
-```
-
-4. Get user information:
-```python
-user_info = client.get_user_information()
-```
-
-### Example
-
-Run the example script to see it in action:
-```bash
-python wanikani/example.py
-```
-
-### Features
-
-- Automatic pagination handling
-- Rate limiting protection
-- Caching support for better performance
-- Progress tracking across SRS stages
-- Detailed vocabulary information including meanings and readings
-
-### Cache Management
-
-The integration automatically caches vocabulary data to reduce API calls. The cache is stored in `wanikani/cache/`. To bypass the cache, use:
-
-```python
-vocab_list = client.get_vocabulary_summary(use_cache=False)
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

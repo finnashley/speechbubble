@@ -2,6 +2,12 @@ import os
 from wanikani.client import WaniKaniAPI
 from wanikani.sentence_builder import SentenceBuilder
 from wanikani.models import UserKnowledge, WaniKaniItem, Reading, Meaning
+try:
+    from keys import WANIKANI_API_KEY, OPENAI_API_KEY
+except ImportError:
+    print("Warning: keys.py not found or missing API keys. Using environment variables as fallback.")
+    WANIKANI_API_KEY = os.getenv("WANIKANI_API_KEY")
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 import json
 
 def get_srs_stage(assignments, subject_id):
@@ -12,11 +18,10 @@ def get_srs_stage(assignments, subject_id):
 
 def main():
     print("Fetching WaniKani data...")
-    api_key = os.getenv("WANIKANI_API_KEY")
-    if not api_key:
-        raise ValueError("Please set WANIKANI_API_KEY environment variable")
+    if not WANIKANI_API_KEY:
+        raise ValueError("Please set WANIKANI_API_KEY in keys.py or environment variable")
     
-    api = WaniKaniAPI(api_key)
+    api = WaniKaniAPI(WANIKANI_API_KEY)
     
     # Get raw vocabulary data first
     print("\nFetching raw vocabulary data...")
@@ -179,10 +184,9 @@ def main():
         print()
     
     # Try GPT-powered sentence generation if OpenAI API key is available
-    openai_api_key = os.getenv("OPENAI_API_KEY")
-    if openai_api_key:
+    if OPENAI_API_KEY:
         print("\n2. GPT-Generated Sentences:")
-        gpt_builder = SentenceBuilder(knowledge, grammar_level='beginner', openai_api_key=openai_api_key)
+        gpt_builder = SentenceBuilder(knowledge, grammar_level='beginner', openai_api_key=OPENAI_API_KEY)
         sentences = gpt_builder.generate_sentence_with_gpt(num_sentences=3)
         for i, sentence in enumerate(sentences, 1):
             print(f"\nSentence {i}:")
